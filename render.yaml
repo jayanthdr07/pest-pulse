@@ -1,0 +1,28 @@
+# One-click deploy on Render (render.com): New + > Blueprint > pick this repo.
+services:
+  - type: web
+    name: pestpulse-cloud
+    runtime: docker
+    plan: starter            # a persistent disk needs a paid instance; on "free" data resets on each restart
+    healthCheckPath: /api/v1/health
+    disk:
+      name: pestpulse-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: PP_DEVICE_KEY
+        generateValue: true  # copy this value into the firmware (DEVICE_KEY)
+      - key: PP_APP_TOKEN
+        sync: false          # optional: set a PIN/token for the app
+      - key: PP_FARM_NAME
+        value: Prime Minds Demo Farm
+      - key: PP_FARM_PLACE
+        value: Hesaraghatta, Bengaluru
+      - key: PP_FARM_LAT
+        value: "13.1357"
+      - key: PP_FARM_LON
+        value: "77.4950"
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
+venv/
+.venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Sensitive credentials & local storage
+.env
+cloud/.env
+cloud/data/telephony_config.json
+cloud/data/smtp_config.json
+cloud/data/*.db
+cloud/data/images/manual_upload_*
+
+# Logs & temp
+*.log
+.DS_Store
+Thumbs.db

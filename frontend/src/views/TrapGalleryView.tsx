@@ -1,0 +1,281 @@
+import React, { useState, useEffect } from 'react';
+import { useApp } from '../context/AppContext';
+import { api } from '../services/api';
+import {
+  Camera,
+  Layers,
+  Thermometer,
+  Droplets,
+  BatteryCharging,
+  Wifi,
+  Sparkles,
+  RefreshCw,
+  Eye,
+  Download,
+  Filter,
+  CheckCircle2,
+  Calendar,
+  X,
+  Radio,
+} from 'lucide-react';
+
+export const TrapGalleryView: React.FC = () => {
+  const { selectedField, language, t } = useApp();
+  const [images, setImages] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [filterNode, setFilterNode] = useState<string>('all');
+  const [activeModalImg, setActiveModalImg] = useState<any>(null);
+  const [showRawMap, setShowRawMap] = useState<Record<number, boolean>>({});
+
+  const loadGallery = async () => {
+    try {
+      setLoading(true);
+      const res = await api.getTrapImages({
+        field_id: selectedField?.field_id,
+        limit: 50,
+      });
+      if (res.ok) {
+        setImages(res.images);
+      }
+    } catch (err) {
+      console.error('Failed to load trap images:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadGallery();
+  }, [selectedField?.field_id]);
+
+  const toggleShowRaw = (id: number) => {
+    setShowRawMap((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const uniqueNodes = Array.from(new Set(images.map((img) => img.node)));
+
+  const filteredImages = images.filter((img) => {
+    if (filterNode !== 'all' && img.node !== filterNode) return false;
+    return true;
+  });
+
+  return (
+    <div className="space-y-6">
+      {/* Title Banner */}
+      <div className="bg-gradient-to-r from-blue-950 via-teal-950 to-stone-900 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-blue-300 text-xs font-bold uppercase tracking-wider mb-1">
+            <Camera className="w-4 h-4" />
+            <span>ESP32-CAM Hardware Optical Stream</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+            {language === 'kn' ? 'ಟ್ರ್ಯಾಪ್ ಕ್ಯಾಮೆರಾ ಗ್ಯಾಲರಿ' : 'Trap Camera Image Gallery'}
+          </h1>
+          <p className="text-sm text-stone-300 mt-1 max-w-2xl">
+            {language === 'kn'
+              ? 'ಹಾರ್ಡ್‌ವೇರ್ ಸಾಧನಗಳಿಂದ ಸೆರೆಹಿಡಿಯಲಾದ ಪ್ರತಿಯೊಂದು ಕ್ಯಾಮೆರಾ ಚಿತ್ರ, ತಾಪಮಾನ, ಬ್ಯಾಟರಿ ಮತ್ತು AI ಕೀಟ ಎಣಿಕೆಯ ಸಂಪೂರ್ಣ ಗ್ಯಾಲರಿ.'
+              : 'Complete repository of optical captures transmitted by field solar traps with toggleable raw JPEG and AI contour detection overlays.'}
+          </p>
+        </div>
+
+        <button
+          onClick={loadGallery}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-md shrink-0"
+        >
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          <span>Refresh Live Images</span>
+        </button>
+      </div>
+
+      {/* Filter Bar */}
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-stone-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-3">
+          <Filter className="w-4 h-4 text-stone-400" />
+          <span className="font-bold text-stone-700">Filter by Trap Node:</span>
+          <select
+            value={filterNode}
+            onChange={(e) => setFilterNode(e.target.value)}
+            className="p-1.5 rounded-lg border border-stone-300 bg-stone-50 font-semibold focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="all">All Connected Nodes ({images.length})</option>
+            {uniqueNodes.map((node) => (
+              <option key={node} value={node}>
+                {node}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="text-stone-500 text-xs flex items-center gap-2">
+          <Radio className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+          <span>Displaying <strong>{filteredImages.length}</strong> verified hardware captures</span>
+        </div>
+      </div>
+
+      {/* Images Grid */}
+      {loading && images.length === 0 ? (
+        <div className="flex items-center justify-center py-20 text-blue-600 font-bold gap-3">
+          <RefreshCw className="w-6 h-6 animate-spin" />
+          <span>Fetching hardware camera captures from field traps...</span>
+        </div>
+      ) : filteredImages.length === 0 ? (
+        <div className="bg-white rounded-2xl p-12 text-center text-stone-400 text-sm border border-stone-200">
+          No hardware images found for this filter. Connected ESP32-CAM nodes transmit on schedule.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredImages.map((img) => {
+            const isRaw = showRawMap[img.id] || false;
+            const displayUrl = isRaw || !img.annotated_image_url ? img.raw_image_url : img.annotated_image_url;
+
+            return (
+              <div
+                key={img.id}
+                className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-xs hover:shadow-md transition flex flex-col"
+              >
+                {/* Image Container with Badge */}
+                <div className="relative aspect-4/3 bg-stone-900 overflow-hidden group">
+                  <img
+                    src={displayUrl}
+                    alt={`Capture from ${img.node}`}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+
+                  {/* Top Node Pill */}
+                  <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-stone-950/80 text-white shadow-xs">
+                      {img.node}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold text-white shadow-xs ${
+                        img.risk === 'HIGH' ? 'bg-red-600' : img.risk === 'MEDIUM' ? 'bg-amber-600' : 'bg-emerald-600'
+                      }`}
+                    >
+                      {img.risk}
+                    </span>
+                  </div>
+
+                  {/* Top Right Zoom Button */}
+                  <button
+                    onClick={() => setActiveModalImg(img)}
+                    className="absolute top-2 right-2 p-1.5 rounded-lg bg-stone-950/70 hover:bg-stone-950 text-white transition opacity-0 group-hover:opacity-100"
+                    title="Inspect High-Res Photo"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* Bottom Counter Bar */}
+                  <div className="absolute bottom-0 inset-x-0 bg-stone-950/75 backdrop-blur-xs p-2 text-white flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-emerald-400 font-mono">
+                      {img.total_insects} insects on card
+                    </span>
+                    <span className="text-[11px] text-stone-300">
+                      +{img.new_catches} new
+                    </span>
+                  </div>
+                </div>
+
+                {/* Telemetry Card Body */}
+                <div className="p-3.5 flex-1 flex flex-col justify-between space-y-3 text-xs">
+                  <div>
+                    <div className="text-[11px] text-stone-500 font-mono flex items-center gap-1">
+                      <Calendar className="w-3 h-3 text-stone-400" />
+                      <span>{img.date_str}</span>
+                    </div>
+
+                    {/* Sensor Telemetry pills */}
+                    <div className="grid grid-cols-3 gap-1.5 mt-2.5 text-[11px]">
+                      <div className="p-1.5 bg-stone-50 rounded-lg border border-stone-100 flex items-center gap-1 text-stone-700">
+                        <Thermometer className="w-3 h-3 text-amber-500" />
+                        <span>{img.temp ?? 27}°C</span>
+                      </div>
+                      <div className="p-1.5 bg-stone-50 rounded-lg border border-stone-100 flex items-center gap-1 text-stone-700">
+                        <Droplets className="w-3 h-3 text-blue-500" />
+                        <span>{img.hum ?? 65}%</span>
+                      </div>
+                      <div className="p-1.5 bg-stone-50 rounded-lg border border-stone-100 flex items-center gap-1 text-stone-700">
+                        <BatteryCharging className="w-3 h-3 text-emerald-500" />
+                        <span>{img.battery_pct ?? 96}%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Toggle Raw vs AI and Actions */}
+                  <div className="pt-2 border-t border-stone-100 flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => toggleShowRaw(img.id)}
+                      className={`text-[11px] font-bold px-2 py-1 rounded-lg border transition ${
+                        isRaw
+                          ? 'bg-stone-800 text-white border-stone-800'
+                          : 'bg-stone-100 text-stone-700 border-stone-200 hover:bg-stone-200'
+                      }`}
+                    >
+                      {isRaw ? 'Showing Raw Photo' : 'Showing AI Bounding'}
+                    </button>
+
+                    <a
+                      href={img.raw_image_url}
+                      download={`pestpulse_capture_${img.node}_${img.id}.jpg`}
+                      className="p-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-600 transition"
+                      title="Download Original JPEG"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Lightbox Modal */}
+      {activeModalImg && (
+        <div className="fixed inset-0 z-50 bg-stone-950/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-stone-900 rounded-2xl max-w-3xl w-full overflow-hidden border border-stone-700 shadow-2xl flex flex-col">
+            <div className="h-12 px-4 bg-stone-950 border-b border-stone-800 flex items-center justify-between text-white text-xs">
+              <span className="font-bold flex items-center gap-2">
+                <Camera className="w-4 h-4 text-emerald-400" />
+                <span>Node: {activeModalImg.node} • High-Resolution Optical Inspection</span>
+              </span>
+              <button
+                onClick={() => setActiveModalImg(null)}
+                className="text-stone-400 hover:text-white font-bold p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="bg-black p-4 flex items-center justify-center max-h-[70vh]">
+              <img
+                src={activeModalImg.annotated_image_url || activeModalImg.raw_image_url}
+                alt="High-Res Inspection"
+                className="max-h-[65vh] object-contain rounded-lg"
+              />
+            </div>
+
+            <div className="p-4 bg-stone-900 text-white text-xs flex flex-wrap items-center justify-between gap-3 border-t border-stone-800">
+              <div className="space-y-0.5">
+                <div className="font-bold text-sm text-emerald-400">
+                  {activeModalImg.total_insects} Total Insects Detected ({activeModalImg.engine})
+                </div>
+                <div className="text-[11px] text-stone-400">
+                  Recorded: {activeModalImg.date_str} • Temperature: {activeModalImg.temp}°C • Humidity: {activeModalImg.hum}%
+                </div>
+              </div>
+
+              <a
+                href={activeModalImg.raw_image_url}
+                download
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition text-xs shadow-sm"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download Uncompressed Image</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

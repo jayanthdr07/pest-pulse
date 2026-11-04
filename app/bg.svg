@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 860" preserveAspectRatio="xMidYMin slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f8f6c"/>
+      <stop offset="0.3" stop-color="#8eaa88"/>
+      <stop offset="0.6" stop-color="#7a9873"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fa05a"/>
+      <stop offset="0.4" stop-color="#4f7a36"/>
+      <stop offset="1" stop-color="#173020"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6efe2" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#e6efe2" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#e6efe2" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d1f14" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0d1f14" stop-opacity="0.92"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.72" cy="0.12" r="0.5">
+      <stop offset="0" stop-color="#fbfff0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#fbfff0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="860" fill="url(#sky)"/>
+  <rect width="400" height="500" fill="url(#sun)"/>
+  <!-- far hills -->
+  <path d="M0 250 C60 215 120 228 180 212 C240 196 300 220 400 200 L400 330 L0 330Z" fill="#8fab88" opacity="0.8"/>
+  <!-- tree line -->
+  <path d="M0 290 Q10 262 20 284 Q28 258 38 282 Q46 255 58 280 Q66 262 74 286 Q86 250 98 282 Q108 266 118 288
+           Q128 256 140 284 Q150 268 160 290 Q172 252 184 286 Q194 270 204 292 Q216 258 228 288 Q238 272 248 292
+           Q260 262 272 290 Q282 270 292 294 Q304 256 316 292 Q326 274 336 296 Q348 262 360 294 Q370 278 380 298
+           Q390 270 400 296 L400 340 L0 340Z" fill="#4c6d47"/>
+  <rect y="250" width="400" height="80" fill="url(#mist)"/>
+  <!-- field with crop rows -->
+  <path d="M0 318 Q200 300 400 318 L400 860 L0 860Z" fill="url(#field)"/>
+  <g stroke="#cfe3a0" stroke-opacity="0.22" stroke-width="2" fill="none">
+    <path d="M200 312 L-260 860"/><path d="M200 312 L-140 860"/><path d="M200 312 L-30 860"/>
+    <path d="M200 312 L80 860"/><path d="M200 312 L190 860"/><path d="M200 312 L300 860"/>
+    <path d="M200 312 L410 860"/><path d="M200 312 L520 860"/><path d="M200 312 L640 860"/>
+  </g>
+  <g fill="#9cc46a" opacity="0.35">
+    <ellipse cx="60" cy="420" rx="60" ry="6"/><ellipse cx="320" cy="440" rx="70" ry="7"/>
+    <ellipse cx="180" cy="380" rx="80" ry="4"/>
+  </g>
+  <rect y="300" width="400" height="560" fill="url(#shade)"/>
+</svg>
