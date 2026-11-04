@@ -1875,6 +1875,22 @@ def upload_and_count():
     })
 
 
+# ------------------------------------------------------------------ Floating AI Chatbot API
+@app.post("/api/v1/chat")
+def chat_with_agronomist():
+    data = request.get_json(silent=True) or request.form.to_dict() or {}
+    message = (data.get("message") or data.get("query") or "").strip()
+    if not message:
+        return jsonify({"ok": False, "error": "Message cannot be empty."}), 400
+
+    language = data.get("language") or "en"
+    field_id = data.get("field_id") or "field_001"
+
+    import ai_chatbot
+    res = ai_chatbot.generate_agronomy_answer(message, language=language, field_id=field_id)
+    return jsonify(res)
+
+
 # ------------------------------------------------------------------ Health & Images
 @app.get("/api/v1/health")
 def health():

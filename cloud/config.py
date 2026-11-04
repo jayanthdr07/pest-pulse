@@ -23,7 +23,7 @@ FARM_LON = float(os.environ.get("PP_FARM_LON", "77.4950"))
 CROP = os.environ.get("PP_CROP", "Tomato")
 
 # ---------------- Devices ----------------
-DEFAULT_INTERVAL_S = 1800        # photo every 30 min in the field; change per trap from the app
+DEFAULT_INTERVAL_S = 60        # photo every 30 min in the field; change per trap from the app
 OFFLINE_AFTER_S = 3 * 3600       # trap shown "offline" if nothing for 3 h (or 3 x its interval)
 ALLOW_BACKFILL = os.environ.get("PP_ALLOW_BACKFILL", "0") == "1"   # lets tools/simulate_cloud.py add past days (demo only)
 RETAIN_DAYS = int(os.environ.get("PP_RETAIN_DAYS", "14"))      # photos older than this are deleted

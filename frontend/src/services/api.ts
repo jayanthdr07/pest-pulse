@@ -509,4 +509,13 @@ export const api = {
     });
     return res.json();
   },
+  // Floating AI Chatbot
+  async sendChatMessage(message: string, language: string = 'en', field_id?: string): Promise<{ ok: boolean; reply: string; source?: string; error?: string }> {
+    const res = await fetch(`${API_BASE}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeader() },
+      body: JSON.stringify({ message, language, field_id }),
+    });
+    return res.json();
+  },
 };

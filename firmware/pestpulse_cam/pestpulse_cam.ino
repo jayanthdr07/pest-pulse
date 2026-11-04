@@ -39,7 +39,7 @@ const bool  HAS_DHT  = true;
 // ====================================================================
 #define FW_VERSION "1.1.0"
 const uint32_t FIRST_INTERVAL_S = 60;                // until the cloud tells us its interval
-const uint32_t RETRY_INTERVAL_S = 120;               // after a failed upload
+const uint32_t RETRY_INTERVAL_S = 60;   // 1-minute retry after failed upload               // after a failed upload
 
 // AI-Thinker ESP32-CAM camera pins (do not change)
 #define PWDN_GPIO_NUM 32

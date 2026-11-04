@@ -22,6 +22,7 @@ import { AlertsView } from './views/AlertsView';
 import { ThreeDView } from './views/ThreeDView';
 import { SettingsView } from './views/SettingsView';
 import { OnboardingModal } from './views/OnboardingModal';
+import { FloatingChatbot } from './components/FloatingChatbot';
 
 export const AppContent: React.FC = () => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
@@ -73,6 +74,7 @@ export const AppContent: React.FC = () => {
         </main>
 
         <OnboardingModal />
+        <FloatingChatbot />
 
         {/* Farmer-friendly footer */}
         <footer className="bg-white border-t border-stone-200 py-6 text-center text-xs text-stone-500 mt-auto">
