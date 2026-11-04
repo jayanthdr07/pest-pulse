@@ -96,7 +96,7 @@ def make_real_twilio_call(to_phone: str, message: str, sid: str = None, token: s
             "sid": call.sid,
             "status": call.status,
             "to": call.to,
-            "from": call.from_,
+            "from": getattr(call, "from_formatted", getattr(call, "_from", act_from)),
             "direction": getattr(call, "direction", "outbound-api"),
         }
         print(f"[Telephony] Real Twilio cellular call dispatched to {formatted_to}! Call SID: {call.sid}, Status: {call.status}")

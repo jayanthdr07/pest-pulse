@@ -145,7 +145,9 @@ export const ConsultationView: React.FC = () => {
 
       setShowBookModal(false);
       await loadData();
-      alert(`✓ Appointment booked! Email invitation automatically dispatched to ${selectedExpert.name} (${selectedExpert.email || 'jayanthgowda1406@gmail.com'}). Automated confirmation call triggered.`);
+      if (res.appointment) {
+        setActiveCallAppt(res.appointment);
+      }
     } catch (err: any) {
       console.error(err);
       alert(`Booking error: ${err.message || 'Failed to book appointment'}`);
