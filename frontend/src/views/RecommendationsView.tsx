@@ -19,6 +19,8 @@ import {
 import { api } from '../services/api';
 import { FertilizerPlan, SprayRecord } from '../types';
 
+import { PageHeader } from '../components/ui/PageHeader';
+
 export const RecommendationsView: React.FC = () => {
   const { selectedField, t, language } = useApp();
   const [activeTab, setActiveTab] = useState<'fertilizer' | 'pesticide' | 'spray_log'>('fertilizer');
@@ -85,58 +87,56 @@ export const RecommendationsView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
-        <div>
-          <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-emerald-600" />
-            <span>{t('nav_recommendations')}</span>
-          </h1>
-          <p className="text-xs text-stone-500 mt-1">
-            {language === 'kn'
-              ? 'ಪೌಷ್ಟಿಕಾಂಶ ಗೊಬ್ಬರ ಮತ್ತು ಕೀಟ ನಿಯಂತ್ರಣ ಔಷಧಗಳ ಸ್ಪಷ್ಟ ವೈಜ್ಞಾನಿಕ ಮಾರ್ಗದರ್ಶಿ'
-              : 'Verified agronomic nutrient doses and scientifically established IPM pest interventions'}
-          </p>
-        </div>
+      <PageHeader
+        category="Agronomic Interventions & Safe Harvest"
+        icon={ShieldCheck}
+        title={t('nav_recommendations') || 'Recommendations'}
+        description={
+          language === 'kn'
+            ? 'ಪೌಷ್ಟಿಕಾಂಶ ಗೊಬ್ಬರ ಮತ್ತು ಕೀಟ ನಿಯಂತ್ರಣ ಔಷಧಗಳ ಸ್ಪಷ್ಟ ವೈಜ್ಞಾನಿಕ ಮಾರ್ಗದರ್ಶಿ'
+            : 'Verified agronomic nutrient doses and scientifically established IPM pest interventions'
+        }
+        action={
+          <div className="flex bg-white/10 backdrop-blur-md p-1 rounded-2xl border border-white/15 text-xs font-bold">
+            <button
+              onClick={() => setActiveTab('fertilizer')}
+              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'fertilizer'
+                  ? 'bg-white text-emerald-950 shadow-sm'
+                  : 'text-emerald-200 hover:text-white'
+              }`}
+            >
+              <Sprout className="w-3.5 h-3.5" />
+              <span>{t('tab_fertilizer')}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('pesticide')}
+              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'pesticide'
+                  ? 'bg-white text-emerald-950 shadow-sm'
+                  : 'text-emerald-200 hover:text-white'
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>{t('tab_pesticide')}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('spray_log')}
+              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'spray_log'
+                  ? 'bg-white text-emerald-950 shadow-sm'
+                  : 'text-emerald-200 hover:text-white'
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5" />
+              <span>{t('tab_spray_log')}</span>
+            </button>
+          </div>
+        }
+      />
 
-        {/* Tab Switcher */}
-        <div className="flex bg-stone-100 p-1 rounded-2xl border border-stone-200 text-xs font-bold self-start sm:self-auto">
-          <button
-            onClick={() => setActiveTab('fertilizer')}
-            className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
-              activeTab === 'fertilizer'
-                ? 'bg-white text-emerald-900 shadow-sm'
-                : 'text-stone-500 hover:text-stone-900'
-            }`}
-          >
-            <Sprout className="w-3.5 h-3.5" />
-            <span>{t('tab_fertilizer')}</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('pesticide')}
-            className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
-              activeTab === 'pesticide'
-                ? 'bg-white text-emerald-900 shadow-sm'
-                : 'text-stone-500 hover:text-stone-900'
-            }`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>{t('tab_pesticide')}</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('spray_log')}
-            className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
-              activeTab === 'spray_log'
-                ? 'bg-white text-emerald-900 shadow-sm'
-                : 'text-stone-500 hover:text-stone-900'
-            }`}
-          >
-            <Clock className="w-3.5 h-3.5" />
-            <span>{t('tab_spray_log')}</span>
-          </button>
-        </div>
-      </div>
 
       {/* Critical Scientific Safety Notice */}
       <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-xs flex items-start gap-3">

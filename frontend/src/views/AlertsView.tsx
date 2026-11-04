@@ -6,15 +6,16 @@ import {
   AlertTriangle,
   AlertCircle,
   Clock,
-  Check,
   Send,
-  Eye,
-  ExternalLink,
-  ShieldAlert,
-  ArrowRight
 } from 'lucide-react';
 import { api } from '../services/api';
 import { AlertItem } from '../types';
+import { PageHeader } from '../components/ui/PageHeader';
+import { Card, CardContent } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { RiskPill } from '../components/ui/RiskPill';
+import { EmptyState } from '../components/ui/EmptyState';
+import { Skeleton } from '../components/ui/Skeleton';
 
 export const AlertsView: React.FC = () => {
   const { selectedField, refreshHome, t, language } = useApp();
@@ -54,37 +55,36 @@ export const AlertsView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
-        <div>
-          <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-            <Bell className="w-6 h-6 text-emerald-600" />
-            <span>{t('card_alerts')}</span>
-          </h1>
-          <p className="text-xs text-stone-500 mt-1">
-            {language === 'kn'
-              ? 'ಹೊಲದ ಪರಿಶೀಲನೆ, ಕೀಟ ಹೆಚ್ಚಳ ಮತ್ತು ಸಾಧನ ಆಫ್‌ಲೈನ್ ಎಚ್ಚರಿಕೆಗಳು'
-              : 'Real-time threshold breaches, rising infestations, battery warnings, and action checklists'}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 text-xs">
-          <span className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold flex items-center gap-1.5">
-            <Send className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Telegram Alerts: Enabled</span>
+      <PageHeader
+        category="Emergency Actions & Field Telemetry Alerts"
+        icon={Bell}
+        title={t('card_alerts') || 'Alerts Center'}
+        description={
+          language === 'kn'
+            ? 'ಹೊಲದ ಪರಿಶೀಲನೆ, ಕೀಟ ಹೆಚ್ಚಳ ಮತ್ತು ಸಾಧನ ಆಫ್‌ಲೈನ್ ಎಚ್ಚರಿಕೆಗಳು'
+            : 'Real-time threshold breaches, rising infestations, battery warnings, and farmer action checklists'
+        }
+        action={
+          <span className="px-3.5 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-emerald-200 font-bold flex items-center gap-2 text-xs">
+            <Send className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Telegram Bot: Active</span>
           </span>
-        </div>
-      </div>
+        }
+      />
 
       {loading ? (
-        <div className="py-12 text-center text-xs text-stone-500">Checking alert notifications...</div>
-      ) : alerts.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-stone-200">
-          <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-stone-900">All Traps & Fields Normal</h3>
-          <p className="text-xs text-stone-500 mt-1">No pending risk alerts or inspection tasks.</p>
+        <div className="space-y-4">
+          <Skeleton className="h-32 w-full rounded-2xl" />
+          <Skeleton className="h-32 w-full rounded-2xl" />
         </div>
+      ) : alerts.length === 0 ? (
+        <EmptyState
+          icon={CheckCircle2}
+          title="All Traps & Fields Normal"
+          description="No pending risk alerts or inspection tasks. Optical traps are reporting normal insect densities."
+        />
       ) : (
         <div className="space-y-4">
           {alerts.map((alert) => {
@@ -93,9 +93,9 @@ export const AlertsView: React.FC = () => {
             const isAcked = Boolean(alert.acked);
 
             return (
-              <div
+              <Card
                 key={alert.id}
-                className={`bg-white rounded-2xl p-6 border shadow-sm transition-all space-y-4 ${
+                className={`p-5 sm:p-6 transition-all space-y-4 ${
                   !isAcked
                     ? isHigh
                       ? 'border-red-300 ring-2 ring-red-500/15'
@@ -104,12 +104,24 @@ export const AlertsView: React.FC = () => {
                 }`}
               >
                 {/* Alert Title & Severity */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-100">
                   <div className="flex items-start sm:items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      isHigh ? 'bg-red-100 text-red-700' : isMedium ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
-                    }`}>
-                      {isHigh ? <AlertCircle className="w-5 h-5" /> : isMedium ? <AlertTriangle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                        isHigh
+                          ? 'bg-red-100 text-red-700'
+                          : isMedium
+                          ? 'bg-amber-100 text-amber-700'
+                          : 'bg-emerald-100 text-emerald-700'
+                      }`}
+                    >
+                      {isHigh ? (
+                        <AlertCircle className="w-5 h-5" />
+                      ) : isMedium ? (
+                        <AlertTriangle className="w-5 h-5" />
+                      ) : (
+                        <CheckCircle2 className="w-5 h-5" />
+                      )}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
@@ -117,7 +129,7 @@ export const AlertsView: React.FC = () => {
                           {language === 'kn' ? alert.title_kn : alert.title_en}
                         </h3>
                         {!isAcked && (
-                          <span className="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+                          <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
                         )}
                       </div>
                       <div className="flex items-center gap-2 text-[11px] text-stone-400 mt-0.5">
@@ -130,34 +142,27 @@ export const AlertsView: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-2 self-end sm:self-center">
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${
-                      isHigh
-                        ? 'bg-red-100 text-red-800'
-                        : isMedium
-                        ? 'bg-amber-100 text-amber-800'
-                        : 'bg-emerald-100 text-emerald-800'
-                    }`}>
-                      {alert.level}
-                    </span>
+                    <RiskPill level={alert.level} size="sm" />
                     {!isAcked && (
-                      <button
+                      <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={() => handleAcknowledge(alert.id)}
-                        className="px-3 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold"
                       >
                         Acknowledge
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
 
                 {/* Body Explanation */}
-                <p className="text-xs text-stone-700 leading-relaxed font-medium">
+                <p className="text-xs sm:text-sm text-stone-700 leading-relaxed font-medium">
                   {language === 'kn' ? alert.body_kn : alert.body_en}
                 </p>
 
                 {/* Interactive Action Checklist */}
                 {alert.steps && alert.steps.length > 0 && (
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-100 space-y-2 text-xs">
+                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/70 space-y-2 text-xs">
                     <span className="font-extrabold text-stone-900 block text-xs">
                       Farmer Action Checklist:
                     </span>
@@ -168,7 +173,7 @@ export const AlertsView: React.FC = () => {
                           <label
                             key={idx}
                             onClick={() => handleToggleStep(alert, idx)}
-                            className="flex items-start gap-2.5 cursor-pointer hover:bg-stone-100/80 p-1.5 rounded-lg transition-colors"
+                            className="flex items-start gap-2.5 cursor-pointer hover:bg-stone-100 p-2 rounded-xl transition-colors min-h-[36px]"
                           >
                             <input
                               type="checkbox"
@@ -176,7 +181,13 @@ export const AlertsView: React.FC = () => {
                               onChange={() => {}}
                               className="mt-0.5 w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                             />
-                            <span className={isDone ? 'line-through text-stone-400' : 'text-stone-800 font-medium'}>
+                            <span
+                              className={
+                                isDone
+                                  ? 'line-through text-stone-400'
+                                  : 'text-stone-800 font-medium'
+                              }
+                            >
                               {language === 'kn' ? step.kn : step.en}
                             </span>
                           </label>
@@ -185,7 +196,7 @@ export const AlertsView: React.FC = () => {
                     </div>
                   </div>
                 )}
-              </div>
+              </Card>
             );
           })}
         </div>

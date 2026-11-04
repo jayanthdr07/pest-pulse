@@ -18,6 +18,8 @@ import {
 import { api } from '../services/api';
 import { WeatherData } from '../types';
 
+import { PageHeader } from '../components/ui/PageHeader';
+
 export const WeatherView: React.FC = () => {
   const { selectedField, t, language } = useApp();
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -55,19 +57,19 @@ export const WeatherView: React.FC = () => {
   const isFavorableClimate = weather.temp >= 20 && weather.temp <= 32 && weather.hum >= 60;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="pb-4 border-b border-stone-200">
-        <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-          <CloudSun className="w-6 h-6 text-emerald-600" />
-          <span>Farm Weather & Spraying Windows</span>
-        </h1>
-        <p className="text-xs text-stone-500 mt-1">
-          {language === 'kn'
+      <PageHeader
+        category="Microclimate & Spray Window Forecast"
+        icon={CloudSun}
+        title="Farm Weather & Spraying Windows"
+        description={
+          language === 'kn'
             ? 'ನೈಜ ಸಮಯದ ತಾಪಮಾನ, ತೇವಾಂಶ, ಮಳೆ ಮುನ್ಸೂಚನೆ ಮತ್ತು ಕೃಷಿ ಸಿಂಪಡಣೆಗೆ ಸೂಕ್ತ ಹವಾಮಾನ'
-            : 'Precision local microclimate data powered by Open-Meteo and in-field DHT22 hardware telemetry'}
-        </p>
-      </div>
+            : 'Precision local microclimate data powered by Open-Meteo and in-field DHT22 hardware telemetry'
+        }
+      />
+
 
       {/* Main Weather Card */}
       <div className="bg-gradient-to-br from-blue-900 via-sky-900 to-indigo-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl">

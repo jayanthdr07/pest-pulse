@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 
+import { PageHeader } from '../components/ui/PageHeader';
+
 export const IntelligenceView: React.FC = () => {
   const { selectedField, homeData, t, language } = useApp();
   const [adviceData, setAdviceData] = useState<any>(null);
@@ -43,19 +45,19 @@ export const IntelligenceView: React.FC = () => {
   const acres = selectedField?.area_acres || 2.5;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Top Header */}
-      <div className="pb-4 border-b border-stone-200">
-        <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-          <Brain className="w-6 h-6 text-emerald-600" />
-          <span>Crop Intelligence & Action Thresholds</span>
-        </h1>
-        <p className="text-xs text-stone-500 mt-1">
-          {language === 'kn'
+      <PageHeader
+        category="Agronomic Thresholds & ICAR Decision Engine"
+        icon={Brain}
+        title="Crop Intelligence & Action Thresholds"
+        description={
+          language === 'kn'
             ? 'ಬೆಳೆ-ನಿರ್ದಿಷ್ಟ ಆರ್ಥಿಕ ಹಾನಿ ಮಟ್ಟ (ETL), ಹವಾಮಾನ ಅನುಕೂಲತೆ ಮತ್ತು ವೈಜ್ಞಾನಿಕ ತೀರ್ಮಾನ ವ್ಯವಸ್ಥೆ'
-            : 'Crop-specific economic threshold analysis, growth stage vulnerability, and weather factor integration'}
-        </p>
-      </div>
+            : 'Crop-specific economic threshold analysis, growth stage vulnerability, and weather factor integration'
+        }
+      />
+
 
       {/* Field Intelligence Banner */}
       <div className="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm grid grid-cols-1 md:grid-cols-4 gap-4">

@@ -22,6 +22,9 @@ import {
 import { api } from '../services/api';
 import { Observation, InsectDetection, PestDetails } from '../types';
 
+import { PageHeader } from '../components/ui/PageHeader';
+import { Button } from '../components/ui/Button';
+
 export const MonitoringView: React.FC = () => {
   const { selectedField, t, language, demoMode } = useApp();
   const [observations, setObservations] = useState<Observation[]>([]);
@@ -103,36 +106,34 @@ export const MonitoringView: React.FC = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Top Banner & Scan Action */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-stone-200">
-        <div>
-          <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-            <Bug className="w-6 h-6 text-emerald-600" />
-            <span>{t('nav_monitoring')}</span>
-          </h1>
-          <p className="text-xs text-stone-500 mt-1">
-            {language === 'kn'
-              ? 'ಹೊಲದಲ್ಲಿರುವ ESP32-CAM ಕ್ಯಾಮೆರಾಗಳು ತೆಗೆದ ನೈಜ ಛಾಯಾಚಿತ್ರಗಳು ಮತ್ತು AI ಕೀಟ ಗುರುತಿಸುವಿಕೆ'
-              : 'Actual optical trap photos captured in the field with computer vision insect bounding boxes'}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
-            <Camera className="w-4 h-4" />
-            <span>{scanning ? 'Processing AI...' : t('action_scan_card')}</span>
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handlePhoneScan}
-              disabled={scanning}
-              className="hidden"
-            />
-          </label>
-        </div>
-      </div>
+      <PageHeader
+        category="Automated Insect Counting & Scouting"
+        icon={Bug}
+        title={t('nav_monitoring') || 'Insect Monitoring'}
+        description={
+          language === 'kn'
+            ? 'ಹೊಲದಲ್ಲಿರುವ ESP32-CAM ಕ್ಯಾಮೆರಾಗಳು ತೆಗೆದ ನೈಜ ಛಾಯಾಚಿತ್ರಗಳು ಮತ್ತು AI ಕೀಟ ಗುರುತಿಸುವಿಕೆ'
+            : 'Actual optical trap photos captured in the field with computer vision insect bounding boxes'
+        }
+        action={
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs font-bold transition-all shadow-md flex items-center gap-2">
+              <Camera className="w-4 h-4" />
+              <span>{scanning ? 'Processing AI...' : (t('action_scan_card') || 'Scan Sticky Card')}</span>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhoneScan}
+                disabled={scanning}
+                className="hidden"
+              />
+            </label>
+          </div>
+        }
+      />
 
       {/* Phone Scan Instant Result Notification */}
       {scanResult && (

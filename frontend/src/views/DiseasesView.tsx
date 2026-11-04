@@ -16,6 +16,8 @@ import {
 import { api } from '../services/api';
 import { Disease } from '../types';
 
+import { PageHeader } from '../components/ui/PageHeader';
+
 export const DiseasesView: React.FC = () => {
   const { selectedField, t, language } = useApp();
   const [diseases, setDiseases] = useState<Disease[]>([]);
@@ -39,19 +41,19 @@ export const DiseasesView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="pb-4 border-b border-stone-200">
-        <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-          <HeartPulse className="w-6 h-6 text-emerald-600" />
-          <span>Crop Diseases & Insect Vector Relationships</span>
-        </h1>
-        <p className="text-xs text-stone-500 mt-1">
-          {language === 'kn'
+      <PageHeader
+        category="Pathology & Insect Vector Transmission"
+        icon={HeartPulse}
+        title="Crop Diseases & Insect Vector Relationships"
+        description={
+          language === 'kn'
             ? 'ಕೀಟಗಳು ಹರಡುವ ಅಥವಾ ಉಂಟುಮಾಡುವ ರೋಗಲಕ್ಷಣಗಳು, ತಡೆಗಟ್ಟುವ ಕ್ರಮಗಳು ಮತ್ತು ICAR ತಜ್ಞರ ಮಾರ್ಗದರ್ಶಿ'
-            : 'Scientifically verified plant disease vectors, entry wound facilitators, and non-vectored leaf blights'}
-        </p>
-      </div>
+            : 'Scientifically verified plant disease vectors, entry wound facilitators, and non-vectored leaf blights'
+        }
+      />
+
 
       {/* Critical Scientific Disclaimer */}
       <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 text-xs flex items-start gap-3">

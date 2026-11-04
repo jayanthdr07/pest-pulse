@@ -32,8 +32,7 @@ RETAIN_DAYS = int(os.environ.get("PP_RETAIN_DAYS", "14"))      # photos older th
 TRAP_MODEL_PATH = os.environ.get("PP_TRAP_MODEL", os.path.join(BASE_DIR, "models", "trap.pt"))
 LEAF_MODEL_PATH = os.environ.get("PP_LEAF_MODEL", os.path.join(BASE_DIR, "models", "leaf.pt"))
 YOLO_CONF = 0.35
-YOLO_IMGSZ = 512
-YOLO_IOU = 0.30
+YOLO_IMGSZ = 1024
 
 # ---------------- Trap types + action thresholds ----------------
 # medium / high = NEW insects per trap in 24 h.

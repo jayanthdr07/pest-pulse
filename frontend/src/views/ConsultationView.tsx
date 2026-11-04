@@ -29,6 +29,8 @@ import {
   Send,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PageHeader } from '../components/ui/PageHeader';
+import { Button } from '../components/ui/Button';
 
 export const ConsultationView: React.FC = () => {
   const { selectedField, language, t } = useApp();
@@ -182,43 +184,41 @@ export const ConsultationView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Page Title */}
-      <div className="bg-gradient-to-r from-teal-900 via-emerald-900 to-stone-900 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-teal-300 text-xs font-bold uppercase tracking-wider mb-1">
-            <Video className="w-4 h-4" />
-            <span>ICAR & UAS Verified Agricultural Tele-Consultation</span>
+      <PageHeader
+        category="ICAR & UAS Verified Agricultural Tele-Consultation"
+        icon={Video}
+        title={language === 'kn' ? 'ಕೃಷಿ ತಜ್ಞರ ಸಮಾಲೋಚನೆ & ವೀಡಿಯೊ ಕರೆ' : 'Agronomist Consultation & Video Call'}
+        description={
+          language === 'kn'
+            ? 'ಕೀಟ ಹಾವಳಿ ಹೆಚ್ಚಾದಾಗ ICAR-IIHR ಮತ್ತು UAS ವಿಜ್ಞಾನಿಗಳೊಂದಿಗೆ ನೇರ Jitsi ವೀಡಿಯೊ ಸಮಾಲೋಚನೆ ನಡೆಸಿ ಅಧಿಕೃತ ಮಾರ್ಗದರ್ಶನ ಪಡೆಯಿರಿ.'
+            : 'Direct peer-to-peer Jitsi video consultations with ICAR and state agricultural university entomologists with integrated Crop Passport pre-briefing.'
+        }
+        action={
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => setShowEmailModal(true)}
+              className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+              icon={<Settings className="w-4 h-4 text-emerald-300" />}
+            >
+              <span>Email Settings</span>
+            </Button>
+
+            <Button
+              variant="accent"
+              size="md"
+              onClick={() => {
+                setSelectedExpert(experts[0] || null);
+                setShowBookModal(true);
+              }}
+              icon={<Plus className="w-4 h-4" />}
+            >
+              <span>Schedule Call</span>
+            </Button>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-            {language === 'kn' ? 'ಕೃಷಿ ತಜ್ಞರ ಸಮಾಲೋಚನೆ & ವೀಡಿಯೊ ಕರೆ' : 'Agronomist Consultation & Video Call'}
-          </h1>
-          <p className="text-sm text-stone-300 mt-1 max-w-2xl">
-            {language === 'kn'
-              ? 'ಕೀಟ ಹಾವಳಿ ಹೆಚ್ಚಾದಾಗ ICAR-IIHR ಮತ್ತು UAS ವಿಜ್ಞಾನಿಗಳೊಂದಿಗೆ ನೇರ Jitsi ವೀಡಿಯೊ ಸಮಾಲೋಚನೆ ನಡೆಸಿ ಅಧಿಕೃತ ಮಾರ್ಗದರ್ಶನ ಪಡೆಯಿರಿ.'
-              : 'Direct peer-to-peer Jitsi video consultations with ICAR and state agricultural university entomologists with integrated Crop Passport pre-briefing.'}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            onClick={() => setShowEmailModal(true)}
-            className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold transition cursor-pointer"
-          >
-            <Settings className="w-4 h-4 text-emerald-300" />
-            <span>Email Dispatch Settings</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setSelectedExpert(experts[0] || null);
-              setShowBookModal(true);
-            }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition shadow-lg shadow-emerald-950/40 shrink-0 cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Schedule New Appointment</span>
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Doctor Email Registry Info Banner */}
       <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 shadow-xs text-xs text-emerald-950">

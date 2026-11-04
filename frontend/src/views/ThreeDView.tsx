@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { api } from '../services/api';
+import { PageHeader } from '../components/ui/PageHeader';
 
 export const ThreeDView: React.FC = () => {
   const { selectedField, t, language } = useApp();
@@ -354,27 +355,24 @@ export const ThreeDView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
-        <div>
-          <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-            <Box className="w-6 h-6 text-amber-500" />
-            <span>{t('demo_simulation_title')}</span>
-          </h1>
-          <p className="text-xs text-stone-500 mt-1">
-            {language === 'kn'
-              ? 'ಕೀಟ ಹೆಚ್ಚಳದ ಸಮಯದಲ್ಲಿ ಸ್ಮಾರ್ಟ್ ಸಿಂಪಡಣೆಯ 3D ಪ್ರಾತ್ಯಕ್ಷಿಕೆ (ಪ್ರಸ್ತುತಿಗಾಗಿ ಮಾತ್ರ)'
-              : 'Interactive WebGL 3D demonstration illustrating automated precision targeted crop protection'}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1.5 rounded-full bg-amber-500 text-stone-950 text-xs font-black uppercase tracking-wider shadow-sm">
+      <PageHeader
+        category="Interactive WebGL Automated Spraying Rig"
+        icon={Box}
+        title={t('demo_simulation_title') || '3D Smart Spraying Demonstration'}
+        description={
+          language === 'kn'
+            ? 'ಕೀಟ ಹೆಚ್ಚಳದ ಸಮಯದಲ್ಲಿ ಸ್ಮಾರ್ಟ್ ಸಿಂಪಡಣೆಯ 3D ಪ್ರಾತ್ಯಕ್ಷಿಕೆ (ಪ್ರಸ್ತುತಿಗಾಗಿ ಮಾತ್ರ)'
+            : 'Interactive WebGL 3D demonstration illustrating automated precision targeted crop protection'
+        }
+        action={
+          <span className="px-3 py-1.5 rounded-full bg-amber-400 text-stone-950 text-xs font-black uppercase tracking-wider shadow-sm">
             {t('demo_simulation_badge')}
           </span>
-        </div>
-      </div>
+        }
+      />
+
 
       {/* Mandatory Prototype Safety Banner */}
       <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 text-xs space-y-1">

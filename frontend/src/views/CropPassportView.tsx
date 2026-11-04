@@ -26,6 +26,8 @@ import {
   Eye,
 } from 'lucide-react';
 
+import { PageHeader } from '../components/ui/PageHeader';
+
 export const CropPassportView: React.FC = () => {
   const { selectedField, fields, setSelectedField, language, t } = useApp();
   const [loading, setLoading] = useState<boolean>(true);
@@ -179,31 +181,25 @@ export const CropPassportView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-stone-900 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">
-            <QrCode className="w-4 h-4" />
-            <span>PestPulse Crop Passport & Certified Traceability</span>
+      <PageHeader
+        category="PestPulse Certified Traceability & QR Audit Trail"
+        icon={QrCode}
+        title={language === 'kn' ? 'ಡಿಜಿಟಲ್ ಬೆಳೆ ಪಾಸ್‌ಪೋರ್ಟ್' : 'Digital Crop Passport'}
+        description={
+          language === 'kn'
+            ? 'ಪ್ರತಿಯೊಂದು ಬೆಳೆ ಹಂತ, ಕೀಟ ನಿಗಾ ಇತಿಹಾಸ, ತಾಪಮಾನ/ಆರ್ದ್ರತೆ ದಾಖಲೆಗಳು ಮತ್ತು ಸಿಂಪಡಣೆ ವಿವರಗಳ ಅಧಿಕೃತ ಕ್ಯೂಆರ್ ರಿಪೋರ್ಟ್.'
+            : 'Certified tamper-resistant audit trail linking field IoT sensors, AI insect counts, and verified chemical/biological treatments.'
+        }
+        action={
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/15 text-xs text-right">
+            <div className="text-emerald-200 font-bold">{selectedField.name}</div>
+            <div className="text-stone-300 font-mono text-[11px]">
+              {selectedField.crop_type} • {selectedField.area_acres} Acres
+            </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-            {language === 'kn' ? 'ಡಿಜಿಟಲ್ ಬೆಳೆ ಪಾಸ್‌ಪೋರ್ಟ್' : 'Digital Crop Passport'}
-          </h1>
-          <p className="text-sm text-stone-300 mt-1 max-w-2xl">
-            {language === 'kn'
-              ? 'ಪ್ರತಿಯೊಂದು ಬೆಳೆ ಹಂತ, ಕೀಟ ನಿಗಾ ಇತಿಹಾಸ, ತಾಪಮಾನ/ಆರ್ದ್ರತೆ ದಾಖಲೆಗಳು ಮತ್ತು ಸಿಂಪಡಣೆ ವಿವರಗಳ ಅಧಿಕೃತ ಕ್ಯೂಆರ್ ರಿಪೋರ್ಟ್.'
-              : 'Certified tamper-resistant audit trail linking field IoT sensors, AI insect counts, and verified chemical/biological treatments.'}
-          </p>
-        </div>
+        }
+      />
 
-        {/* Quick Field Pill */}
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/20 text-xs">
-          <div className="text-stone-300 font-semibold mb-1">Selected Field:</div>
-          <div className="font-bold text-white text-sm">{selectedField.name}</div>
-          <div className="text-emerald-300 font-mono text-[11px]">
-            {selectedField.crop_type} • {selectedField.area_acres} Acres
-          </div>
-        </div>
-      </div>
 
       {loading && !report ? (
         <div className="flex items-center justify-center py-20 text-emerald-600 font-bold gap-3">

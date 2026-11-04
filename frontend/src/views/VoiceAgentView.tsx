@@ -23,6 +23,8 @@ import {
   Check,
 } from 'lucide-react';
 
+import { PageHeader } from '../components/ui/PageHeader';
+
 export const VoiceAgentView: React.FC = () => {
   const { selectedField, language, setLanguage, farmer, t } = useApp();
   const [loading, setLoading] = useState<boolean>(true);
@@ -175,49 +177,45 @@ export const VoiceAgentView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-stone-900 via-amber-950 to-emerald-950 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-amber-300 text-xs font-bold uppercase tracking-wider mb-1">
-            <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
-            <span>Factual Spoken Agronomic Intelligence & Telephony Dispatch</span>
+      <PageHeader
+        category="Acoustic Agronomic Telemetry & Telephony Dispatch"
+        icon={Radio}
+        title={language === 'kn' ? 'ಧ್ವನಿ ಎಚ್ಚರಿಕೆ ಸಹಾಯಕ (Voice Agent)' : 'Multilingual Voice Agent'}
+        description={
+          language === 'kn'
+            ? 'ಕೀಟ ಏರಿಕೆ ಮತ್ತು ಸಿಂಪಡಣೆ ನಂತರದ ಸ್ಥಿತಿಯನ್ನು ಕನ್ನಡ ಮತ್ತು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಧ್ವನಿಯ ಮೂಲಕ ಸ್ಪಷ್ಟವಾಗಿ ವಿವರಿಸುವ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಸಹಾಯಕ.'
+            : 'Verbal acoustic alerts strictly compiled from confirmed hardware captures, post-treatment persistence, and ICAR economic action thresholds.'
+        }
+        action={
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md p-1.5 rounded-2xl border border-white/15">
+            <Languages className="w-4 h-4 text-amber-300 ml-1.5" />
+            <span className="text-xs font-bold text-emerald-100 hidden sm:inline">Speech Language:</span>
+            <button
+              onClick={() => {
+                handleStopVoice();
+                setSpeechLang('en');
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                speechLang === 'en' ? 'bg-white text-emerald-950 font-black shadow-xs' : 'text-emerald-200 hover:text-white'
+              }`}
+            >
+              English
+            </button>
+            <button
+              onClick={() => {
+                handleStopVoice();
+                setSpeechLang('kn');
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold font-kannada transition cursor-pointer ${
+                speechLang === 'kn' ? 'bg-white text-emerald-950 font-black shadow-xs' : 'text-emerald-200 hover:text-white'
+              }`}
+            >
+              ಕನ್ನಡ
+            </button>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-            {language === 'kn' ? 'ಧ್ವನಿ ಎಚ್ಚರಿಕೆ ಸಹಾಯಕ (Voice Agent)' : 'Multilingual Voice Agent'}
-          </h1>
-          <p className="text-sm text-stone-300 mt-1 max-w-2xl">
-            {language === 'kn'
-              ? 'ಕೀಟ ಏರಿಕೆ ಮತ್ತು ಸಿಂಪಡಣೆ ನಂತರದ ಸ್ಥಿತಿಯನ್ನು ಕನ್ನಡ ಮತ್ತು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಧ್ವನಿಯ ಮೂಲಕ ಸ್ಪಷ್ಟವಾಗಿ ವಿವರಿಸುವ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಸಹಾಯಕ.'
-              : 'Verbal acoustic alerts strictly compiled from confirmed hardware captures, post-treatment persistence, and ICAR economic action thresholds.'}
-          </p>
-        </div>
+        }
+      />
 
-        <div className="flex items-center gap-2 bg-stone-900/60 p-2 rounded-xl border border-stone-700">
-          <Languages className="w-4 h-4 text-amber-400" />
-          <span className="text-xs font-bold text-stone-200">Speech Language:</span>
-          <button
-            onClick={() => {
-              handleStopVoice();
-              setSpeechLang('en');
-            }}
-            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
-              speechLang === 'en' ? 'bg-emerald-600 text-white' : 'text-stone-400 hover:text-white'
-            }`}
-          >
-            English
-          </button>
-          <button
-            onClick={() => {
-              handleStopVoice();
-              setSpeechLang('kn');
-            }}
-            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
-              speechLang === 'kn' ? 'bg-emerald-600 text-white' : 'text-stone-400 hover:text-white'
-            }`}
-          >
-            ಕನ್ನಡ
-          </button>
-        </div>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Columns: Interactive Audio Station & Script Display */}

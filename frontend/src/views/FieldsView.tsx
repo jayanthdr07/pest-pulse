@@ -18,6 +18,9 @@ import {
 import { api } from '../services/api';
 import { Field } from '../types';
 
+import { PageHeader } from '../components/ui/PageHeader';
+import { Button } from '../components/ui/Button';
+
 export const FieldsView: React.FC = () => {
   const { fields, selectedField, setSelectedField, refreshHome, t, language } = useApp();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
@@ -94,27 +97,29 @@ export const FieldsView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
-        <div>
-          <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-            <Layers className="w-6 h-6 text-emerald-600" />
-            <span>{t('nav_fields')}</span>
-          </h1>
-          <p className="text-xs text-stone-500 mt-1">
-            {language === 'kn' ? 'ನಿಮ್ಮ ಜಮೀನುಗಳು, ಬೆಳೆ ವಿವರಗಳು ಮತ್ತು ಜೋಡಿಸಲಾದ ಸಾಧನಗಳು' : 'Manage your agricultural plots, crop types, and connected monitoring traps'}
-          </p>
-        </div>
+      <PageHeader
+        category="Multi-Plot Agricultural Boundaries"
+        icon={Layers}
+        title={t('nav_fields') || 'My Fields'}
+        description={
+          language === 'kn'
+            ? 'ನಿಮ್ಮ ಜಮೀನುಗಳು, ಬೆಳೆ ವಿವರಗಳು ಮತ್ತು ಜೋಡಿಸಲಾದ ಸಾಧನಗಳು'
+            : 'Manage your agricultural plots, crop types, and connected monitoring traps'
+        }
+        action={
+          <Button
+            variant="accent"
+            size="md"
+            onClick={handleOpenAdd}
+            icon={<Plus className="w-4 h-4" />}
+          >
+            <span>{t('action_add_field') || 'Add New Field'}</span>
+          </Button>
+        }
+      />
 
-        <button
-          onClick={handleOpenAdd}
-          className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-2 self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>{t('action_add_field')}</span>
-        </button>
-      </div>
 
       {/* Fields Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

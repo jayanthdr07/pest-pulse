@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 
+import { PageHeader } from '../components/ui/PageHeader';
+
 export const SettingsView: React.FC = () => {
   const { farmer, language, setLanguage, demoMode, setDemoMode, t, refreshHome } = useApp();
   const [name, setName] = useState(farmer?.name || 'Ramesh Kumar');
@@ -47,19 +49,19 @@ export const SettingsView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       {/* Top Header */}
-      <div className="pb-4 border-b border-stone-200">
-        <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-          <Settings className="w-6 h-6 text-emerald-600" />
-          <span>{t('nav_settings')} & Farmer Profile</span>
-        </h1>
-        <p className="text-xs text-stone-500 mt-1">
-          {language === 'kn'
+      <PageHeader
+        category="Account Credentials & System Parameters"
+        icon={Settings}
+        title={`${t('nav_settings') || 'Settings'} & Farmer Profile`}
+        description={
+          language === 'kn'
             ? 'ರೈತರ ಪ್ರೊಫೈಲ್, ಭಾಷಾ ಆಯ್ಕೆ, ಹಾರ್ಡ್‌ವೇರ್ ಕೀ ಮತ್ತು ನೋಟಿಫಿಕೇಶನ್ ಸೆಟ್ಟಿಂಗ್ಸ್'
-            : 'Configure account credentials, regional language preferences, and device secrets'}
-        </p>
-      </div>
+            : 'Configure account credentials, regional language preferences, and device secrets'
+        }
+      />
+
 
       {savedSuccess && (
         <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2 text-xs text-emerald-800 font-bold">

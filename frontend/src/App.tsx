@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import { Header } from './components/Header';
-import { Sidebar } from './components/Sidebar';
+import { MobileDrawer } from './components/MobileDrawer';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { SubGroupNav } from './components/SubGroupNav';
+import { IncomingCallModal } from './components/IncomingCallModal';
+
 import { HomeView } from './views/HomeView';
 import { CropPassportView } from './views/CropPassportView';
 import { PublicPassportView } from './views/PublicPassportView';
@@ -24,7 +28,7 @@ import { SettingsView } from './views/SettingsView';
 import { OnboardingModal } from './views/OnboardingModal';
 
 export const AppContent: React.FC = () => {
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false);
   const location = useLocation();
 
   // If visitor is viewing a public QR passport report, render dedicated standalone view
@@ -38,54 +42,51 @@ export const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 flex font-sans antialiased text-stone-900">
-      {/* Left Sidebar Navigation (Dashboard option prominently pinned on left side) */}
-      <Sidebar
-        isOpenMobile={mobileSidebarOpen}
-        onCloseMobile={() => setMobileSidebarOpen(false)}
-      />
+    <div className="min-h-screen bg-[#F4F6F3] flex flex-col font-sans antialiased text-[#2D3E2F] selection:bg-[#EBF7EE] selection:text-[#2E7D32]">
+      {/* Sticky Top Bar & Header Nav Bar */}
+      <Header onOpenMobileDrawer={() => setMobileDrawerOpen(true)} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <Header onToggleSidebar={() => setMobileSidebarOpen(true)} />
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 lg:pb-12">
+        {/* Mobile & Desktop Segmented Sub-Group Navigation */}
+        <SubGroupNav />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-20">
-          <Routes>
-            <Route path="/" element={<HomeView />} />
-            <Route path="/passport" element={<CropPassportView />} />
-            <Route path="/consultation" element={<ConsultationView />} />
-            <Route path="/voice" element={<VoiceAgentView />} />
-            <Route path="/trap-gallery" element={<TrapGalleryView />} />
-            <Route path="/photo-count" element={<PhotoCountView />} />
-            <Route path="/fields" element={<FieldsView />} />
-            <Route path="/monitoring" element={<MonitoringView />} />
-            <Route path="/trends" element={<TrendsView />} />
-            <Route path="/intelligence" element={<IntelligenceView />} />
-            <Route path="/weather" element={<WeatherView />} />
-            <Route path="/recommendations" element={<RecommendationsView />} />
-            <Route path="/diseases" element={<DiseasesView />} />
-            <Route path="/devices" element={<DevicesView />} />
-            <Route path="/alerts" element={<AlertsView />} />
-            <Route path="/3d-demo" element={<ThreeDView />} />
-            <Route path="/settings" element={<SettingsView />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
+        <Routes>
+          <Route path="/" element={<HomeView />} />
+          <Route path="/passport" element={<CropPassportView />} />
+          <Route path="/consultation" element={<ConsultationView />} />
+          <Route path="/voice" element={<VoiceAgentView />} />
+          <Route path="/trap-gallery" element={<TrapGalleryView />} />
+          <Route path="/photo-count" element={<PhotoCountView />} />
+          <Route path="/fields" element={<FieldsView />} />
+          <Route path="/monitoring" element={<MonitoringView />} />
+          <Route path="/trends" element={<TrendsView />} />
+          <Route path="/intelligence" element={<IntelligenceView />} />
+          <Route path="/weather" element={<WeatherView />} />
+          <Route path="/recommendations" element={<RecommendationsView />} />
+          <Route path="/diseases" element={<DiseasesView />} />
+          <Route path="/devices" element={<DevicesView />} />
+          <Route path="/alerts" element={<AlertsView />} />
+          <Route path="/3d-demo" element={<ThreeDView />} />
+          <Route path="/settings" element={<SettingsView />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
 
-        <OnboardingModal />
+      {/* Mobile Drawer (Shown on hamburger click on <1024px) */}
+      <MobileDrawer
+        isOpen={mobileDrawerOpen}
+        onClose={() => setMobileDrawerOpen(false)}
+      />
 
-        {/* Farmer-friendly footer */}
-        <footer className="bg-white border-t border-stone-200 py-6 text-center text-xs text-stone-500 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>
-              <strong>PestPulse</strong> — Connected AI & IoT Smart Agriculture Platform • Team Prime Minds
-            </p>
-            <p className="text-[11px] text-stone-400">
-              ICAR-IIHR Hesaraghatta agronomic guidelines • Sourced chemical and IPM recommendations
-            </p>
-          </div>
-        </footer>
-      </div>
+      {/* Mobile Fixed Bottom Tab Bar (Shown only on <1024px) */}
+      <MobileBottomNav />
+
+      {/* Outbreak / Telemetry Emergency Phone Call Overlay Modal */}
+      <IncomingCallModal />
+
+      {/* Guided Farmer Onboarding & Login Modal */}
+      <OnboardingModal />
     </div>
   );
 };

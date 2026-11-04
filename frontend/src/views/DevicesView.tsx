@@ -21,6 +21,9 @@ import {
 import { api } from '../services/api';
 import { Device } from '../types';
 
+import { PageHeader } from '../components/ui/PageHeader';
+import { Button } from '../components/ui/Button';
+
 export const DevicesView: React.FC = () => {
   const { fields, selectedField, t, language } = useApp();
   const [devices, setDevices] = useState<Device[]>([]);
@@ -87,19 +90,29 @@ export const DevicesView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="pb-4 border-b border-stone-200">
-        <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-          <Cpu className="w-6 h-6 text-emerald-600" />
-          <span>IoT Hardware Nodes & Device Management</span>
-        </h1>
-        <p className="text-xs text-stone-500 mt-1">
-          {language === 'kn'
+      <PageHeader
+        category="Wireless Mesh & Solar Telemetry Nodes"
+        icon={Cpu}
+        title="IoT Hardware Nodes & Device Management"
+        description={
+          language === 'kn'
             ? 'ಹೊಲದಲ್ಲಿರುವ ESP32-CAM ಸ್ಮಾರ್ಟ್ ಬಲೆಗಳು, ಬ್ಯಾಟರಿ ಸ್ಥಿತಿ ಮತ್ತು ದೂರಸ್ಥ ಕಾನ್ಫಿಗರೇಶನ್'
-            : 'Configure ESP32-CAM optical trap nodes, upload intervals, telemetry health, and field associations'}
-        </p>
-      </div>
+            : 'Configure ESP32-CAM optical trap nodes, upload intervals, telemetry health, and field associations'
+        }
+        action={
+          <Button
+            variant="accent"
+            size="md"
+            onClick={loadDevices}
+            icon={<RotateCcw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />}
+          >
+            <span>Refresh Devices</span>
+          </Button>
+        }
+      />
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Devices Grid */}

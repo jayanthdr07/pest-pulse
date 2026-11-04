@@ -1,286 +1,139 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { Sprout } from 'lucide-react';
+import { NAV_GROUPS } from '../config/navConfig';
 import { useApp } from '../context/AppContext';
-import {
-  Home,
-  QrCode,
-  Video,
-  Mic,
-  Camera,
-  UploadCloud,
-  Layers,
-  Bug,
-  LineChart,
-  Brain,
-  CloudSun,
-  ShieldCheck,
-  HeartPulse,
-  Cpu,
-  Bell,
-  Box,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  Radio,
-  MapPin,
-  CheckCircle2,
-} from 'lucide-react';
 
-interface SidebarProps {
-  isOpenMobile: boolean;
-  onCloseMobile: () => void;
-}
-
-interface NavItem {
-  to: string;
-  label: string;
-  icon: any;
-  exact?: boolean;
-  badge?: string;
-  badgeColor?: string;
-  count?: number;
-  highlight?: boolean;
-}
-
-interface NavSection {
-  title: string;
-  items: NavItem[];
-}
-
-export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile }) => {
-  const { t, language, setLanguage, demoMode, fields, selectedField, setSelectedField, unreadAlertsCount } = useApp();
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+export const Sidebar: React.FC = () => {
+  const { demoMode, unreadAlertsCount, language } = useApp();
   const location = useLocation();
 
-  const navigationSections: NavSection[] = [
-    {
-      title: language === 'kn' ? 'ಮುಖ್ಯ ನಿಗಾ & ಬೆಳೆ' : 'Monitoring & Crops',
-      items: [
-        { to: '/', label: t('nav_home'), icon: Home, exact: true },
-        { to: '/passport', label: t('nav_passport'), icon: QrCode, badge: 'QR', badgeColor: 'bg-emerald-500' },
-        { to: '/trap-gallery', label: t('nav_trap_gallery'), icon: Camera, badge: 'Live', badgeColor: 'bg-blue-500' },
-        { to: '/photo-count', label: t('nav_photo_count'), icon: UploadCloud, badge: 'AI', badgeColor: 'bg-purple-500' },
-        { to: '/fields', label: t('nav_fields'), icon: Layers },
-        { to: '/monitoring', label: t('nav_monitoring'), icon: Bug },
-        { to: '/trends', label: t('nav_trends'), icon: LineChart },
-        { to: '/intelligence', label: t('nav_intelligence'), icon: Brain },
-      ],
-    },
-    {
-      title: language === 'kn' ? 'ತಜ್ಞರು & ಕೃಷಿ ಕ್ರಮಗಳು' : 'Expert & Interventions',
-      items: [
-        { to: '/consultation', label: t('nav_consultation'), icon: Video, badge: 'Jitsi', badgeColor: 'bg-teal-500' },
-        { to: '/voice', label: t('nav_voice'), icon: Mic, badge: 'TTS', badgeColor: 'bg-amber-500' },
-        { to: '/weather', label: t('nav_weather'), icon: CloudSun },
-        { to: '/recommendations', label: t('nav_recommendations'), icon: ShieldCheck },
-        { to: '/diseases', label: t('nav_diseases'), icon: HeartPulse },
-      ],
-    },
-    {
-      title: language === 'kn' ? 'ಸಾಧನ & ಸೆಟ್ಟಿಂಗ್ಸ್' : 'Hardware & System',
-      items: [
-        { to: '/devices', label: t('nav_devices'), icon: Cpu },
-        { to: '/alerts', label: t('nav_alerts'), icon: Bell, count: unreadAlertsCount },
-        { to: '/3d-demo', label: t('nav_3d_demo'), icon: Box, highlight: true },
-        { to: '/settings', label: t('nav_settings'), icon: Settings },
-      ],
-    },
-  ];
-
   return (
-    <>
-      {/* Mobile Backdrop */}
-      {isOpenMobile && (
+    <aside
+      className="hidden lg:flex flex-col items-center w-16 bg-stone-900 text-stone-200 border-r border-stone-800 shrink-0 sticky top-0 h-screen select-none z-30 py-3"
+      aria-label="Navigation Icon Rail"
+    >
+      {/* Brand Icon with Tooltip */}
+      <div className="relative group mb-3">
+        <NavLink
+          to="/"
+          className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-950 border border-emerald-400/30 transition-transform hover:scale-105"
+          aria-label="PestPulse Home"
+        >
+          <Sprout className="w-6 h-6" />
+        </NavLink>
+        {/* Tooltip */}
+        <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-stone-900/95 backdrop-blur-xs text-white text-xs font-bold rounded-lg shadow-xl border border-stone-700 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+          PestPulse 2.0
+        </div>
+      </div>
+
+      {/* ESP32-CAM LIVE dot indicator (dot only, with tooltip) */}
+      <div className="relative group mb-3">
         <div
-          className="fixed inset-0 z-40 bg-stone-900/50 backdrop-blur-xs lg:hidden transition-opacity"
-          onClick={onCloseMobile}
-        />
-      )}
-
-      {/* Sidebar Container */}
-      <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-stone-900 text-stone-200 border-r border-stone-800 transition-all duration-300 shadow-2xl lg:static lg:shadow-none ${
-          collapsed ? 'w-20' : 'w-72'
-        } ${isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
-      >
-        {/* Brand Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-stone-800 bg-stone-950/40">
-          <NavLink to="/" onClick={onCloseMobile} className="flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-900/30 shrink-0">
-              <Bug className="w-6 h-6 animate-pulse" />
-            </div>
-            {!collapsed && (
-              <div className="leading-tight truncate">
-                <div className="flex items-center gap-1.5 font-black text-white text-base tracking-tight">
-                  <span>PestPulse</span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
-                    2.0
-                  </span>
-                </div>
-                <p className="text-[11px] text-stone-400 truncate">
-                  {language === 'kn' ? 'ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್' : 'Smart Agriculture Platform'}
-                </p>
-              </div>
-            )}
-          </NavLink>
-
-          {/* Desktop collapse toggle */}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg bg-stone-800 text-stone-400 hover:text-white hover:bg-stone-700 transition"
-            title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-          >
-            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
+          className="w-10 h-8 rounded-lg flex items-center justify-center bg-stone-950/40 border border-stone-800/80 cursor-default"
+          aria-label={demoMode ? 'Simulated Demo Mode' : 'ESP32-CAM Live Connected'}
+        >
+          <span className="relative flex h-2.5 w-2.5">
+            <span
+              className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                demoMode ? 'bg-amber-400' : 'bg-emerald-400'
+              }`}
+            />
+            <span
+              className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                demoMode ? 'bg-amber-500' : 'bg-emerald-500'
+              }`}
+            />
+          </span>
         </div>
-
-        {/* Quick Field Selector */}
-        {!collapsed && fields && fields.length > 0 && (
-          <div className="px-3 py-3 border-b border-stone-800 bg-stone-950/20">
-            <label className="text-[10px] uppercase font-bold text-stone-400 flex items-center gap-1 mb-1.5">
-              <MapPin className="w-3 h-3 text-emerald-400" />
-              <span>{language === 'kn' ? 'ಆಯ್ಕೆಮಾಡಿದ ಜಮೀನು' : 'Active Monitored Field'}</span>
-            </label>
-            <select
-              value={selectedField?.field_id || ''}
-              onChange={(e) => {
-                const found = fields.find((f) => f.field_id === e.target.value);
-                if (found) setSelectedField(found);
-              }}
-              className="w-full text-xs bg-stone-800 text-stone-200 border border-stone-700 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium truncate"
-            >
-              {fields.map((f) => (
-                <option key={f.field_id} value={f.field_id}>
-                  {f.name} ({f.crop_type})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Live Hardware Status Indicator */}
-        <div className={`px-4 py-2 border-b border-stone-800 flex items-center ${collapsed ? 'justify-center' : 'justify-between'}`}>
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${demoMode ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
-              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${demoMode ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
-            </span>
-            {!collapsed && (
-              <span className="text-[11px] font-semibold tracking-wide text-stone-300">
-                {demoMode ? 'SIMULATED DEMO' : 'LIVE HARDWARE IOT'}
-              </span>
-            )}
-          </div>
-          {!collapsed && (
-            <span className="text-[10px] text-stone-500 flex items-center gap-1 font-mono">
-              <Radio className="w-3 h-3 text-emerald-400" />
-              ESP32-CAM
-            </span>
-          )}
+        {/* Tooltip */}
+        <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-stone-900/95 backdrop-blur-xs text-xs font-semibold rounded-lg shadow-xl border border-stone-700 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+          <span className={demoMode ? 'text-amber-400 font-bold' : 'text-emerald-400 font-bold'}>
+            {demoMode ? 'Demo Mode' : 'ESP32-CAM Connected (915MHz)'}
+          </span>
         </div>
+      </div>
 
-        {/* Navigation Items (Scrollable) */}
-        <div className="flex-1 overflow-y-auto px-2 py-3 space-y-4 scrollbar-thin scrollbar-thumb-stone-800">
-          {navigationSections.map((section, idx) => (
-            <div key={idx} className="space-y-1">
-              {!collapsed && (
-                <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-stone-500">
-                  {section.title}
-                </div>
-              )}
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                const isActive = item.exact ? location.pathname === item.to : location.pathname.startsWith(item.to);
+      {/* 5 Groups as Icon Rail separated by thin dividers */}
+      <div className="flex-1 w-full overflow-y-auto scrollbar-none flex flex-col items-center space-y-1">
+        {NAV_GROUPS.map((group, groupIdx) => (
+          <React.Fragment key={group.id}>
+            {/* Thin Divider between groups */}
+            {groupIdx > 0 && <div className="w-8 h-px bg-stone-800 my-2 mx-auto shrink-0" />}
 
-                return (
+            {group.items.map((item) => {
+              const Icon = item.icon;
+              const isActive = item.exact
+                ? location.pathname === item.to
+                : location.pathname.startsWith(item.to);
+
+              return (
+                <div key={item.to} className="relative group">
                   <NavLink
-                    key={item.to}
                     to={item.to}
-                    onClick={onCloseMobile}
-                    title={collapsed ? item.label : undefined}
-                    className={`group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                    aria-label={item.label}
+                    className={`relative w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
                       isActive
-                        ? item.highlight
-                          ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-800/40'
-                          : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold'
-                        : item.highlight
-                        ? 'bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900/60 border border-emerald-800/50'
-                        : 'text-stone-400 hover:text-stone-100 hover:bg-stone-800/60'
-                    } ${collapsed ? 'justify-center px-2' : ''}`}
+                        ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-950'
+                        : 'text-stone-400 hover:text-stone-100 hover:bg-stone-800/80'
+                    }`}
                   >
-                    <Icon
-                      className={`w-4 h-4 shrink-0 transition-colors ${
-                        isActive ? 'text-emerald-400' : 'text-stone-400 group-hover:text-stone-200'
-                      }`}
-                    />
-                    {!collapsed && (
-                      <div className="flex-1 flex items-center justify-between truncate">
-                        <span className="truncate">{item.label}</span>
-                        {item.badge && (
-                          <span
-                            className={`ml-1.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md text-white ${
-                              item.badgeColor || 'bg-stone-700'
-                            }`}
-                          >
-                            {item.badge}
-                          </span>
-                        )}
-                        {item.count !== undefined && item.count > 0 && (
-                          <span className="ml-1.5 px-1.5 py-0.2 rounded-full bg-red-600 text-white text-[10px] font-extrabold animate-pulse">
-                            {item.count}
-                          </span>
-                        )}
-                      </div>
+                    <Icon className="w-5 h-5 shrink-0" />
+
+                    {/* Small dot pip for badges */}
+                    {item.badge === 'Live' && (
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-500 ring-2 ring-stone-900" />
+                    )}
+                    {item.badge === 'AI' && (
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-purple-500 ring-2 ring-stone-900" />
+                    )}
+                    {item.badge === 'TTS' && (
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-stone-900" />
+                    )}
+                    {item.badge === 'Jitsi' && (
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-teal-500 ring-2 ring-stone-900" />
+                    )}
+                    {item.showUnreadCount && unreadAlertsCount > 0 && (
+                      <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse ring-2 ring-stone-900" />
                     )}
                   </NavLink>
-                );
-              })}
-            </div>
-          ))}
-        </div>
 
-        {/* Footer & Language Pill */}
-        <div className="p-3 border-t border-stone-800 bg-stone-950/40 space-y-2">
-          {!collapsed ? (
-            <div className="flex items-center justify-between text-xs text-stone-400">
-              <span className="text-[11px] font-medium">{language === 'kn' ? 'ಭಾಷೆ:' : 'Language:'}</span>
-              <div className="flex items-center gap-1 bg-stone-800 p-0.5 rounded-lg border border-stone-700">
-                <button
-                  onClick={() => setLanguage('en')}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition ${
-                    language === 'en' ? 'bg-emerald-600 text-white shadow-xs' : 'text-stone-400 hover:text-white'
-                  }`}
-                >
-                  EN
-                </button>
-                <button
-                  onClick={() => setLanguage('kn')}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition ${
-                    language === 'kn' ? 'bg-emerald-600 text-white shadow-xs' : 'text-stone-400 hover:text-white'
-                  }`}
-                >
-                  ಕನ್ನಡ
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={() => setLanguage(language === 'en' ? 'kn' : 'en')}
-              className="w-full py-1 text-center text-[10px] font-bold bg-stone-800 rounded text-emerald-400 hover:bg-stone-700"
-              title="Toggle Language"
-            >
-              {language.toUpperCase()}
-            </button>
-          )}
+                  {/* Accessible Hover Tooltip with Label & Description */}
+                  <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-stone-900/98 backdrop-blur-md text-stone-100 text-xs rounded-xl shadow-2xl border border-stone-700 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+                    <div className="font-bold flex items-center gap-1.5">
+                      <span>{language === 'kn' && item.labelKn ? item.labelKn : item.label}</span>
+                      {item.badge && (
+                        <span
+                          className={`text-[9px] font-black px-1.5 py-0.2 rounded-sm text-white ${
+                            item.badgeColor || 'bg-stone-700'
+                          }`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[10px] text-stone-400 mt-0.5">
+                      {language === 'kn' && item.descriptionKn ? item.descriptionKn : item.description}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </React.Fragment>
+        ))}
+      </div>
 
-          {!collapsed && (
-            <div className="text-[10px] text-stone-500 text-center font-mono pt-1">
-              PestPulse v2.0 • ICAR-IIHR
-            </div>
-          )}
+      {/* Footer Info / Version Tooltip */}
+      <div className="relative group mt-auto pt-2 shrink-0">
+        <div className="w-9 h-7 rounded-lg bg-stone-950/60 border border-stone-800 text-[10px] font-black text-emerald-400 flex items-center justify-center cursor-default">
+          2.0
         </div>
-      </aside>
-    </>
+        {/* Tooltip */}
+        <div className="absolute left-full ml-3 bottom-0 px-2.5 py-1 bg-stone-900/95 backdrop-blur-xs text-[11px] font-mono text-stone-300 rounded-lg shadow-xl border border-stone-700 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+          PestPulse 2.0 • ICAR-IIHR
+        </div>
+      </div>
+    </aside>
   );
 };

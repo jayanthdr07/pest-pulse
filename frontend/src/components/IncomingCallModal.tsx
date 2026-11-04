@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Phone, PhoneCall, PhoneOff, Volume2, ShieldAlert, CheckCircle2, UserCheck } from 'lucide-react';
+import { Phone, PhoneCall, PhoneOff, Volume2, ShieldAlert, UserCheck } from 'lucide-react';
 
 interface IncomingCallData {
   call_id: string;
@@ -20,7 +20,6 @@ export const IncomingCallModal: React.FC = () => {
   const [callDuration, setCallDuration] = useState<number>(0);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
-  const ringOscillatorsRef = useRef<{ osc1: OscillatorNode; osc2: OscillatorNode; gain: GainNode } | null>(null);
   const ringIntervalRef = useRef<any>(null);
   const timerRef = useRef<any>(null);
 

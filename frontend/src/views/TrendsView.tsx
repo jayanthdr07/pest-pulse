@@ -31,6 +31,8 @@ import {
 } from 'recharts';
 import { api } from '../services/api';
 
+import { PageHeader } from '../components/ui/PageHeader';
+
 const COLORS = ['#059669', '#d97706', '#dc2626', '#2563eb', '#7c3aed', '#0891b2'];
 
 export const TrendsView: React.FC = () => {
@@ -87,50 +89,49 @@ export const TrendsView: React.FC = () => {
   const isFalling = summary.change_pct !== null && summary.change_pct < -15;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="space-y-6">
       {/* Header & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-stone-200">
-        <div>
-          <h1 className="text-2xl font-black text-stone-900 flex items-center gap-2">
-            <Activity className="w-6 h-6 text-emerald-600" />
-            <span>Insect Counts & Population Dynamics</span>
-          </h1>
-          <p className="text-xs text-stone-500 mt-1">
-            {language === 'kn'
-              ? 'ದೈನಂದಿನ, ವಾರಕ್ಕೊಮ್ಮೆ ಮತ್ತು ತಿಂಗಳ ಕೀಟಗಳ ಎಣಿಕೆ ಬದಲಾವಣೆ ಹಾಗೂ ಸಿಂಪಡಣೆಯ ಪ್ರಭಾವ'
-              : 'Multi-period insect count trajectories, peak occurrence days, and post-treatment reductions'}
-          </p>
-        </div>
+      <PageHeader
+        category="Time-Series Insect Dynamics & Analytics"
+        icon={Activity}
+        title="Insect Counts & Population Dynamics"
+        description={
+          language === 'kn'
+            ? 'ದೈನಂದಿನ, ವಾರಕ್ಕೊಮ್ಮೆ ಮತ್ತು ತಿಂಗಳ ಕೀಟಗಳ ಎಣಿಕೆ ಬದಲಾವಣೆ ಹಾಗೂ ಸಿಂಪಡಣೆಯ ಪ್ರಭಾವ'
+            : 'Multi-period insect count trajectories, peak occurrence days, and post-treatment reductions'
+        }
+        action={
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Day range filter buttons */}
+            <div className="flex bg-white/10 backdrop-blur-md p-1 rounded-xl border border-white/15 text-xs font-bold">
+              {[7, 14, 30, 60].map((d) => (
+                <button
+                  key={d}
+                  onClick={() => setDays(d)}
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                    days === d
+                      ? 'bg-white text-emerald-950 shadow-sm font-extrabold'
+                      : 'text-emerald-200 hover:text-white'
+                  }`}
+                >
+                  {d}d
+                </button>
+              ))}
+            </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Day range filter buttons */}
-          <div className="flex bg-stone-100 p-1 rounded-xl border border-stone-200 text-xs font-bold">
-            {[7, 14, 30, 60].map((d) => (
-              <button
-                key={d}
-                onClick={() => setDays(d)}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
-                  days === d
-                    ? 'bg-white text-stone-950 shadow-sm'
-                    : 'text-stone-500 hover:text-stone-900'
-                }`}
-              >
-                {d} Days
-              </button>
-            ))}
+            <a
+              href={api.getReportCsvUrl(days, selectedField?.field_id)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 min-h-[40px]"
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              <span>Export CSV</span>
+            </a>
           </div>
+        }
+      />
 
-          <a
-            href={api.getReportCsvUrl(days, selectedField?.field_id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 text-xs font-bold transition-all shadow-sm flex items-center gap-2"
-          >
-            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-            <span>Export CSV</span>
-          </a>
-        </div>
-      </div>
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

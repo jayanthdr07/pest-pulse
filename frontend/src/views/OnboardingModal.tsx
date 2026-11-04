@@ -5,35 +5,30 @@ import {
   User,
   Phone,
   Lock,
-  Globe,
   MapPin,
-  Ruler,
-  Cpu,
-  CheckCircle2,
   ArrowRight,
   X,
-  Sparkles,
   Wifi,
+  CheckCircle2,
 } from 'lucide-react';
 import { api } from '../services/api';
 
 export const OnboardingModal: React.FC = () => {
-  const { openOnboarding, setOpenOnboarding, setFarmer, setFields, setSelectedField, language, setLanguage, t, refreshHome } = useApp();
-  const [step, setStep] = useState<number>(1); // 1: Register, 2: Field Details, 3: Device Connect, 4: Complete
+  const { openOnboarding, setOpenOnboarding, setFarmer, setFields, setSelectedField, language, setLanguage, refreshHome } = useApp();
+  const [step, setStep] = useState<number>(1);
   const [isLoginMode, setIsLoginMode] = useState<boolean>(false);
 
   // Form Fields
   const [name, setName] = useState('Ramesh Kumar');
   const [contact, setContact] = useState('9876543210');
   const [password, setPassword] = useState('farmer123');
-  const [farmName, setFarmName] = useState('Green Valley Farm');
   const [farmPlace, setFarmPlace] = useState('Hesaraghatta, Bengaluru Rural');
   const [cropType, setCropType] = useState('Tomato');
   const [cropVariety, setCropVariety] = useState('Arka Rakshak F1');
-  const [fieldName, setFieldName] = useState('Polyhouse Block A');
+  const [fieldName, setFieldName] = useState('Polyhouse Plot A');
   const [areaAcres, setAreaAcres] = useState('2.5');
   const [sowingDate, setSowingDate] = useState('2026-09-15');
-  const [deviceNode, setDeviceNode] = useState('trap1');
+  const [deviceNode] = useState('trap1');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -71,7 +66,7 @@ export const OnboardingModal: React.FC = () => {
         contact,
         password,
         language,
-        farm_name: farmName,
+        farm_name: fieldName,
         farm_place: farmPlace,
         crop_type: cropType,
         crop_variety: cropVariety,
@@ -87,7 +82,7 @@ export const OnboardingModal: React.FC = () => {
           setSelectedField(res.primary_field);
           setFields([res.primary_field]);
         }
-        setStep(3); // Go to device connect step
+        setStep(3);
       } else {
         setErrorMsg(res.error || 'Registration failed');
       }

@@ -1,218 +1,247 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { ProfileMenu } from './ProfileMenu';
+import { HeaderNavBar } from './HeaderNavBar';
 import {
   Sprout,
   Sun,
-  CloudRain,
-  Wifi,
-  WifiOff,
   Bell,
-  Globe,
-  Sliders,
   ChevronDown,
-  User,
+  MapPin,
+  X,
   FlaskConical,
-  Activity,
-  Menu
+  Menu,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
-export const Header: React.FC<{ onToggleSidebar?: () => void }> = ({ onToggleSidebar }) => {
+interface HeaderProps {
+  onOpenMobileDrawer?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onOpenMobileDrawer }) => {
   const {
     farmer,
     fields,
     selectedField,
     setSelectedField,
-    language,
-    setLanguage,
-    t,
     demoMode,
     setDemoMode,
     homeData,
     unreadAlertsCount,
-    setOpenOnboarding
+    t,
   } = useApp();
   const navigate = useNavigate();
+  const [bannerDismissed, setBannerDismissed] = useState<boolean>(false);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return t('greeting_morning');
-    if (hour < 17) return t('greeting_afternoon');
-    return t('greeting_evening');
+    if (hour < 12) return t('greeting_morning') || 'Good morning';
+    if (hour < 17) return t('greeting_afternoon') || 'Good afternoon';
+    return t('greeting_evening') || 'Good evening';
   };
 
   const weather = homeData?.weather;
-  const isAllOnline = homeData?.hardware_summary?.all_online ?? true;
 
   return (
-    <header className="sticky top-0 z-40 bg-stone-900 text-stone-100 shadow-md border-b border-stone-800">
-      {/* Demo Mode / Hardware Banner */}
-      <div className={`px-4 py-1 text-xs font-semibold flex items-center justify-between transition-colors ${
-        demoMode ? 'bg-amber-500 text-stone-950' : 'bg-emerald-800 text-emerald-100'
-      }`}>
-        <div className="flex items-center gap-2">
-          {demoMode ? (
-            <>
-              <FlaskConical className="w-3.5 h-3.5" />
-              <span>SIMULATED DEMO MODE — Computer-generated trap readings for demonstration.</span>
-            </>
-          ) : (
-            <>
-              <Activity className="w-3.5 h-3.5 animate-pulse text-emerald-300" />
-              <span>LIVE HARDWARE MODE — Connected to field ESP32-CAM optical traps & DHT sensors.</span>
-            </>
-          )}
-        </div>
-        <button
-          onClick={() => setDemoMode(!demoMode)}
-          className={`px-2 py-0.5 rounded text-[11px] font-bold border transition-all ${
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md text-[#2D3E2F] border-b border-[#E2E8DF] shadow-[0_2px_12px_rgba(45,62,47,0.04)]">
+      {/* Slim dismissible Live Hardware / Demo strip */}
+      {!bannerDismissed && (
+        <div
+          className={`px-3 sm:px-4 py-1 text-xs font-semibold flex items-center justify-between transition-colors ${
             demoMode
-              ? 'bg-stone-950 text-amber-300 border-stone-900 hover:bg-stone-900'
-              : 'bg-emerald-950 text-emerald-200 border-emerald-700 hover:bg-emerald-900'
+              ? 'bg-amber-100 text-amber-900 border-b border-amber-200'
+              : 'bg-[#EBF7EE] text-[#2E7D32] border-b border-[#C8E6C9]'
           }`}
         >
-          {demoMode ? t('switch_to_live') : t('switch_to_demo')}
-        </button>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          {/* Left: Branding & Greeting */}
-          <div className="flex items-center gap-3">
-            {onToggleSidebar && (
-              <button
-                onClick={onToggleSidebar}
-                className="lg:hidden p-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white"
-                title="Toggle Navigation Menu"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
+          <div className="flex items-center gap-2 truncate text-[11px] sm:text-xs font-medium">
+            {demoMode ? (
+              <>
+                <FlaskConical className="w-3.5 h-3.5 shrink-0 text-amber-800" />
+                <span className="truncate">
+                  Simulated Demo Mode — Simulated pest counts and weather alerts.
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+                </span>
+                <span className="truncate">
+                  Live Hardware Mode — Active telemetry connected to field ESP32-CAM optical traps & DHT sensors.
+                </span>
+              </>
             )}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-700 flex items-center justify-center shadow-lg border border-emerald-400/30">
-              <Sprout className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg tracking-tight text-white font-sans">
-                  {t('brand_name')}
-                </span>
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-900/80 text-emerald-300 border border-emerald-700 font-medium">
-                  {t('digital_assistant')}
-                </span>
-              </div>
-              <div className="text-xs text-stone-400 flex items-center gap-1.5 mt-0.5">
-                <span>{getGreeting()}, <strong className="text-stone-200">{farmer?.name || 'Ramesh Kumar'}</strong></span>
-                <span>•</span>
-                <span>{farmer?.farm_place || 'Hesaraghatta, Bengaluru'}</span>
-              </div>
-            </div>
           </div>
 
-          {/* Middle: Field & Crop Selector */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative">
-              <select
-                value={selectedField?.field_id || ''}
-                onChange={(e) => {
-                  const f = fields.find((item) => item.field_id === e.target.value);
-                  setSelectedField(f || null);
-                }}
-                className="appearance-none bg-stone-800 text-stone-100 pl-3 pr-8 py-1.5 rounded-lg text-xs font-semibold border border-stone-700 hover:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
-              >
-                {fields.map((f) => (
-                  <option key={f.field_id} value={f.field_id}>
-                    {f.name} ({f.crop_type} • {f.area_acres} {t('acres')})
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-stone-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <div className="flex items-center gap-2 shrink-0 ml-2">
+            <button
+              onClick={() => setDemoMode(!demoMode)}
+              className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
+                demoMode
+                  ? 'bg-amber-900 text-amber-100 hover:bg-amber-800'
+                  : 'bg-white text-[#2E7D32] border border-[#C8E6C9] hover:bg-[#EBF7EE]'
+              }`}
+            >
+              {demoMode ? (t('switch_to_live') || 'Switch to Live') : (t('switch_to_demo') || 'Switch to Demo')}
+            </button>
+            <button
+              onClick={() => setBannerDismissed(true)}
+              className="p-0.5 rounded text-[#556857] hover:text-[#2D3E2F]"
+              title="Dismiss banner"
+              aria-label="Dismiss banner"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Main Top Bar */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5">
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
+          {/* Left: Brand Logo & Title + Active Monitored Field Selector */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {/* Mobile Hamburger Drawer Trigger (<1024px) */}
+            <button
+              type="button"
+              onClick={onOpenMobileDrawer}
+              className="lg:hidden p-2 min-h-[44px] min-w-[44px] rounded-xl bg-[#F4F6F3] hover:bg-[#EAEFE8] text-[#556857] hover:text-[#2D3E2F] flex items-center justify-center cursor-pointer border border-[#E2E8DF] shrink-0 transition-colors"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            {/* Brand Logo & Title (shown on all screens) */}
+            <div
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 cursor-pointer shrink-0 select-none group mr-1 sm:mr-2"
+              title="PestPulse 2.0 Home"
+            >
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2E7D32] to-[#2D3E2F] flex items-center justify-center text-white shadow-xs border border-emerald-400/20 group-hover:scale-105 transition-transform shrink-0">
+                <Sprout className="w-5 h-5" />
+              </div>
+              <div className="hidden sm:flex items-center gap-1.5">
+                <span className="font-black text-[#2D3E2F] text-base tracking-tight leading-none">
+                  PestPulse
+                </span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#EBF7EE] text-[#2E7D32] font-extrabold border border-[#C8E6C9]">
+                  2.0
+                </span>
+              </div>
             </div>
 
-            {selectedField && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-800 text-xs font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                <span>{selectedField.crop_type}</span>
-                <span className="text-stone-500">•</span>
-                <span>{selectedField.area_acres} {t('acres')}</span>
+            {/* Field Dropdown Selector (Sticky & Prominent) */}
+            {fields && fields.length > 0 && (
+              <div className="relative flex items-center min-w-0">
+                <label htmlFor="active-field-select" className="sr-only">
+                  Active Monitored Field
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#2E7D32]">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <select
+                    id="active-field-select"
+                    value={selectedField?.field_id || ''}
+                    onChange={(e) => {
+                      const found = fields.find((f) => f.field_id === e.target.value);
+                      if (found) setSelectedField(found);
+                    }}
+                    className="appearance-none bg-[#F4F6F3] hover:bg-[#EAEFE8] text-[#2D3E2F] pl-8.5 pr-8 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold border border-[#E2E8DF] focus:outline-hidden focus:ring-2 focus:ring-[#2E7D32] cursor-pointer max-w-[200px] sm:max-w-xs md:max-w-sm truncate shadow-2xs transition-colors"
+                  >
+                    {fields.map((f) => (
+                      <option key={f.field_id} value={f.field_id}>
+                        {f.name} ({f.crop_type} • {f.area_acres} {t('acres') || 'acres'})
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-[#556857] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+
+                {/* Desktop Greeting pill */}
+                <div className="hidden xl:flex items-center gap-1 text-xs text-[#556857] ml-3 truncate">
+                  <span>{getGreeting()},</span>
+                  <strong className="text-[#2D3E2F]">{farmer?.name || 'Ramesh Kumar'}</strong>
+                  <span className="text-stone-300">•</span>
+                  <span className="text-[#556857]">{farmer?.farm_place || 'Hesaraghatta, Bengaluru'}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right: Live Status Pill, Weather Mini, Alerts Bell, Profile Avatar */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* LIVE status pill (pulsing green dot, "ESP32-CAM connected") */}
+            <div
+              className={`flex items-center gap-2 px-3 py-1.5 min-h-[40px] rounded-xl text-xs font-bold border transition-colors shadow-2xs ${
+                demoMode
+                  ? 'bg-amber-50 border-amber-200 text-amber-800'
+                  : 'bg-[#EBF7EE] border-[#C8E6C9] text-[#2E7D32]'
+              }`}
+              title={
+                demoMode
+                  ? 'Simulated Mode Active'
+                  : 'ESP32-CAM Solar Optical Traps & DHT Telemetry Connected'
+              }
+            >
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
+                <span
+                  className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                    demoMode ? 'bg-amber-400' : 'bg-emerald-500'
+                  }`}
+                />
+                <span
+                  className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                    demoMode ? 'bg-amber-500' : 'bg-[#2E7D32]'
+                  }`}
+                />
               </span>
-            )}
-          </div>
+              <span className="hidden sm:inline">
+                {demoMode ? 'Demo Traps' : 'ESP32-CAM connected'}
+              </span>
+              <span className="sm:hidden text-[11px]">
+                {demoMode ? 'Demo' : 'LIVE'}
+              </span>
+            </div>
 
-          {/* Right: Telemetry pill, Weather pill, Bell, Language */}
-          <div className="flex items-center gap-2.5 self-end md:self-center">
-            {/* Weather status pill */}
+            {/* Mini Weather summary pill on tablet/desktop */}
             {weather && (
-              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-stone-800/80 border border-stone-700 text-xs text-stone-300">
-                <Sun className="w-3.5 h-3.5 text-amber-400" />
-                <span>{weather.temp}°C</span>
-                <span className="text-stone-500">•</span>
-                <span>{weather.hum}% RH</span>
+              <div
+                onClick={() => navigate('/weather')}
+                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] rounded-xl bg-[#F4F6F3] hover:bg-[#EAEFE8] border border-[#E2E8DF] text-xs text-[#2D3E2F] transition-colors cursor-pointer"
+                title="View Farm Weather Details"
+              >
+                <Sun className="w-4 h-4 text-amber-500 shrink-0" />
+                <span className="font-bold">{weather.temp}°C</span>
+                <span className="text-[#556857]/60">•</span>
+                <span className="text-[#556857]">{weather.hum}% RH</span>
               </div>
             )}
 
-            {/* Hardware connectivity pill */}
-            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border ${
-              isAllOnline
-                ? 'bg-emerald-950/70 border-emerald-800 text-emerald-300'
-                : 'bg-amber-950/70 border-amber-800 text-amber-300'
-            }`}>
-              {isAllOnline ? (
-                <Wifi className="w-3.5 h-3.5 text-emerald-400" />
-              ) : (
-                <WifiOff className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-              )}
-              <span className="hidden sm:inline">{isAllOnline ? t('all_devices_online') : t('device_alert')}</span>
-            </div>
-
-            {/* Alerts Bell */}
+            {/* Notification Bell (with unread badge in terracotta) */}
             <button
               onClick={() => navigate('/alerts')}
-              className="relative p-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors"
-              title={t('card_alerts')}
+              className="relative p-2.5 min-h-[44px] min-w-[44px] rounded-xl bg-[#F4F6F3] hover:bg-[#EAEFE8] border border-[#E2E8DF] text-[#556857] hover:text-[#2D3E2F] transition-colors flex items-center justify-center cursor-pointer"
+              title="Alerts Center"
+              aria-label="Alerts Center"
             >
               <Bell className="w-4 h-4" />
               {unreadAlertsCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center animate-bounce">
+                <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#D97746] text-white text-[10px] font-black flex items-center justify-center animate-bounce shadow-xs">
                   {unreadAlertsCount}
                 </span>
               )}
             </button>
 
-            {/* Language Switcher */}
-            <div className="flex items-center bg-stone-800 rounded-lg p-0.5 border border-stone-700">
-              <button
-                onClick={() => setLanguage('en')}
-                className={`px-2 py-1 rounded text-xs font-bold transition-all ${
-                  language === 'en'
-                    ? 'bg-emerald-600 text-white shadow'
-                    : 'text-stone-400 hover:text-stone-200'
-                }`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => setLanguage('kn')}
-                className={`px-2 py-1 rounded text-xs font-bold font-kannada transition-all ${
-                  language === 'kn'
-                    ? 'bg-emerald-600 text-white shadow'
-                    : 'text-stone-400 hover:text-stone-200'
-                }`}
-              >
-                ಕನ್ನಡ
-              </button>
-            </div>
-
-            {/* Farmer Profile / Logout */}
-            <button
-              onClick={() => setOpenOnboarding(true)}
-              className="p-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors"
-              title="Farmer Profile & Onboarding"
-            >
-              <User className="w-4 h-4" />
-            </button>
+            {/* Farmer Profile Avatar Dropdown Menu */}
+            <ProfileMenu />
           </div>
         </div>
       </div>
+
+      {/* New Horizontal Navigation Bar directly under the top bar */}
+      <HeaderNavBar />
     </header>
   );
 };
