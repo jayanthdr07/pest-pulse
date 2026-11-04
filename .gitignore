@@ -18,8 +18,15 @@ __pycache__/
 cloud/.env
 cloud/data/telephony_config.json
 cloud/data/smtp_config.json
-cloud/data/*.db
+cloud/data/*.db*
 cloud/data/images/manual_upload_*
+cloud/data/emails/*.html
+
+# YOLO datasets & training runs
+cloud/data/yolo_dataset/
+cloud/data/yolo_runs/
+yolov8n.pt
+cloud/yolov8n.pt
 
 # Logs & temp
 *.log

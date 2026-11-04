@@ -1779,17 +1779,19 @@ def upload_and_count():
     # Insert detections
     for d in dets:
         box = [int(x) for x in d["box"]]
+        cls_key = d.get("cls") or d.get("class", "whitefly")
+        sp_meta = pest_knowledge.get_pest_knowledge(cls_key, crop_type)
         db.insert_detection(
             reading_id=rid,
             node="manual-photo-upload",
             field_id=field_id,
             crop_type=crop_type,
-            insect_class=d.get("class", "insect"),
-            common_name_en=d.get("common_name_en", "Detected Insect"),
-            common_name_kn=d.get("common_name_kn", "ಪತ್ತೆಯಾದ ಕೀಟ"),
-            scientific_name=d.get("scientific_name"),
+            insect_class=cls_key,
+            common_name_en=d.get("common_name_en") or sp_meta.get("name_en", "Detected Insect"),
+            common_name_kn=d.get("common_name_kn") or sp_meta.get("name_kn", "ಪತ್ತೆಯಾದ ಕೀಟ"),
+            scientific_name=d.get("scientific_name") or sp_meta.get("scientific_name", "Insecta"),
             count=1,
-            confidence=float(d.get("confidence", 0.85)),
+            confidence=float(d.get("conf") or d.get("confidence", 0.90)),
             box_json=box,
             model_version=f"{engine}_v2",
         )
